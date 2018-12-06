@@ -61,7 +61,7 @@ def pre_processing():
 
     with open('/Users/humebc/Google_Drive/projects/barbara_forcioli/sp_seqs.fasta', 'w') as f:
         for i in range(0, len(sp_fasta_new), 2):
-            f.write('>{}\n'.format(sp_fasta_new[i]))
+            f.write('{}\n'.format(sp_fasta_new[i]))
             f.write('{}\n'.format(sp_fasta_new[i + 1].replace('-','')))
 
 
@@ -202,5 +202,6 @@ def generate_colour_lists():
     apples = '/Users/humebc/Google_Drive/projects/barbara_forcioli/t50_grey_list'
 
 # at this point, we have a redundant fasta for each
+pre_processing()
 create_names_files()
 generate_colour_lists()
