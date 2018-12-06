@@ -35,6 +35,34 @@ def pre_processing():
             f.write('>{}\n'.format(t50_fasta[i]))
             f.write('{}\n'.format(t50_fasta[i + 1].replace('-','')))
 
+    # we don't need all of the sequences that are currently in the
+    # '/Users/humebc/Google_Drive/projects/barbara_forcioli/2018-10-31_16-03-45.679838.DIVs.fasta'
+    # lets go through them and only keep those that are in the sp_abund dict
+
+    # create the sp abund dict
+    sp_abund_path = '/Users/humebc/Google_Drive/projects/barbara_forcioli/sp_abund.csv'
+    with open(sp_abund_path, 'r') as f:
+        sp_abund_dict = {str(line.split(',')[0]): int(line.split(',')[1]) for line in f}
+
+    # read in the sp output fasta
+    sp_fasta_path = '/Users/humebc/Google_Drive/projects/barbara_forcioli/2018-10-31_16-03-45.679838.DIVs.fasta'
+    with open(sp_fasta_path, 'r') as f:
+        sp_fasta = [line.rstrip() for line in f]
+
+
+    sp_fasta_new = []
+    for i in range(0, len(sp_fasta), 2):
+        if sp_fasta[i][1:] in sp_abund_dict.keys():
+            # then this is one of the sequences we want to keep
+            sp_fasta_new.extend([sp_fasta[i], sp_fasta[i+1]])
+            print('keeping {}'.format(sp_fasta[i][1:]))
+        else:
+            print('binning {}'.format(sp_fasta[i][1:]))
+
+    with open('/Users/humebc/Google_Drive/projects/barbara_forcioli/sp_seqs.fasta', 'w') as f:
+        for i in range(0, len(sp_fasta_new), 2):
+            f.write('>{}\n'.format(sp_fasta_new[i]))
+            f.write('{}\n'.format(sp_fasta_new[i + 1].replace('-','')))
 
 
 
@@ -51,7 +79,7 @@ def create_names_files():
         t50_fasta_dict[t50_file[i][1:]] = t50_file[i+1]
 
     # create a dict from the sp fasta
-    sp_fasta_path = '/Users/humebc/Google_Drive/projects/barbara_forcioli/2018-10-31_16-03-45.679838.DIVs.fasta'
+    sp_fasta_path = '/Users/humebc/Google_Drive/projects/barbara_forcioli/sp_seqs.fasta'
     with open(sp_fasta_path, 'r') as f:
         sp_file = [line.rstrip() for line in f]
     sp_fasta_dict = {}
@@ -114,7 +142,7 @@ def generate_colour_lists():
         t50_fasta_dict[t50_file[i][1:]] = t50_file[i + 1]
 
     # create a dict from the sp fasta
-    sp_fasta_path = '/Users/humebc/Google_Drive/projects/barbara_forcioli/2018-10-31_16-03-45.679838.DIVs.fasta'
+    sp_fasta_path = '/Users/humebc/Google_Drive/projects/barbara_forcioli/sp_seqs.fasta'
     with open(sp_fasta_path, 'r') as f:
         sp_file = [line.rstrip() for line in f]
     sp_fasta_dict = {}
@@ -174,5 +202,5 @@ def generate_colour_lists():
     apples = '/Users/humebc/Google_Drive/projects/barbara_forcioli/t50_grey_list'
 
 # at this point, we have a redundant fasta for each
-
+create_names_files()
 generate_colour_lists()
